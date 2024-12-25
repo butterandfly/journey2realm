@@ -1,0 +1,16 @@
+{
+	"nodes":[
+		{"id":"d8625dca8e47b64d","type":"text","text":"#Journey Journey 1 ^5e1435cb-dfb4-4ddb-97a7-833ccc6523f1\n\nThe description of Journey 1.","x":-436,"y":-223,"width":396,"height":103},
+		{"id":"f3c1becd8c3e5417","type":"file","file":"test/Quest 1.canvas","x":-636,"y":20,"width":400,"height":400},
+		{"id":"01a6fa6965a64ef7","type":"file","file":"test/Quest 2.canvas","x":-38,"y":78,"width":400,"height":400},
+		{"id":"c766bdde23abc883","type":"file","file":"test/Quest 3.canvas","x":-300,"y":660,"width":420,"height":260},
+		{"id":"0a269b7d26683bb9","x":-960,"y":660,"width":400,"height":400,"type":"file","file":"test/Quest 4.canvas"}
+	],
+	"edges":[
+		{"id":"c2c3d6eff1354065","fromNode":"d8625dca8e47b64d","fromSide":"bottom","toNode":"f3c1becd8c3e5417","toSide":"top"},
+		{"id":"404c1dfe96ebe614","fromNode":"d8625dca8e47b64d","fromSide":"bottom","toNode":"01a6fa6965a64ef7","toSide":"top"},
+		{"id":"6819cfd65d81fcc8","fromNode":"f3c1becd8c3e5417","fromSide":"bottom","toNode":"c766bdde23abc883","toSide":"top"},
+		{"id":"30b6b4dcf8fe51ea","fromNode":"01a6fa6965a64ef7","fromSide":"bottom","toNode":"c766bdde23abc883","toSide":"top"},
+		{"id":"7c1589a2c20faac9","fromNode":"f3c1becd8c3e5417","fromSide":"bottom","toNode":"0a269b7d26683bb9","toSide":"top"}
+	]
+}

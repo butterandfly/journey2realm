@@ -1,0 +1,11 @@
+{
+	"id": "uuid",
+	"name": "UUID Generator",
+	"version": "1.1.4",
+	"minAppVersion": "0.15.0",
+	"description": "Generates UUIDv4 strings at the cursor within your notes.",
+	"author": "Taylor",
+	"authorUrl": "https://taylo.dev",
+	"fundingUrl": "https://taylo.dev/donate",
+	"isDesktopOnly": false
+}

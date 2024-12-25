@@ -1,0 +1,21 @@
+{
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "realm": "^20.1.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "scripts": {
+    "test": "jest --force-exit --detectOpenHandles"
+  },
+  "bin": {
+    "journey-converter": "./bin/cli.js"
+  },
+  "name": "journey2realm",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/butterandfly/journey2realm.git"
+  }
+}

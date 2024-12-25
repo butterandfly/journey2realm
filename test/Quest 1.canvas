@@ -1,0 +1,17 @@
+{
+	"nodes":[
+		{"id":"9e33376838f7076a","type":"text","text":"#quest Quest 1 ^6086fb72-daa0-4b8a-b361-fbe6942ab4a3\nThe description of Quest 1.\n","x":-840,"y":-320,"width":340,"height":140,"color":"1"},
+		{"id":"973c6479d0148546","type":"text","text":"#section Section 1 ^731c1f01-a0e3-4bb6-966f-68d6fece2772\n\nThe description of section 1.","x":-340,"y":-320,"width":473,"height":120,"color":"2"},
+		{"id":"a4890582d5da4794","type":"text","text":"#section Section 2 ^93d458a0-8789-4541-93b4-4951e6f497a4","x":300,"y":-320,"width":473,"height":70,"color":"2"},
+		{"id":"6a9074574b3b62c2","type":"text","text":"#definition Thing 2 ^d204c157-f1ed-4ade-9f28-95e539790901\nThe definition of thing 2.","x":300,"y":-180,"width":473,"height":111},
+		{"id":"1f40314a50f426ec","type":"text","text":"#para ^622c27bb-a68c-4d17-b805-4fb3efcab821\nMarkdown content 1.","x":-340,"y":-125,"width":473,"height":56},
+		{"id":"081f8327b3c7d1d5","type":"text","text":"#definition Thing 1 ^bdd524c6-60e3-4d27-b426-59f74d550fd3\nThe definition of thing 1.","x":-340,"y":-16,"width":473,"height":111}
+	],
+	"edges":[
+		{"id":"ec2ab01787336d7f","fromNode":"973c6479d0148546","fromSide":"bottom","toNode":"1f40314a50f426ec","toSide":"top"},
+		{"id":"6393a1b5d2515b4b","fromNode":"1f40314a50f426ec","fromSide":"bottom","toNode":"081f8327b3c7d1d5","toSide":"top"},
+		{"id":"d475b9ab008e23d7","fromNode":"9e33376838f7076a","fromSide":"right","toNode":"973c6479d0148546","toSide":"left"},
+		{"id":"101b6482fd435f0e","fromNode":"973c6479d0148546","fromSide":"right","toNode":"a4890582d5da4794","toSide":"left"},
+		{"id":"09652483bd1aab53","fromNode":"a4890582d5da4794","fromSide":"bottom","toNode":"6a9074574b3b62c2","toSide":"top"}
+	]
+}

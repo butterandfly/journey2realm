@@ -1,0 +1,36 @@
+
+{
+  "name": "${questName}",
+  "sections": [
+    {
+      "name": "Section 1",
+      "blocks": [
+        {
+          "content": "Markdown content 1.",
+          "blockType": "block"
+        },
+        {
+          "name": "Thing 1",
+          "content": "Thing 1\nThe definition of thing 1.",
+          "blockType": "definition"
+        }
+      ]
+    },
+    {
+      "name": "Section 2",
+      "blocks": [
+        {
+          "name": "Thing 2",
+          "content": "Thing 2\nThe definition of thing 2.",
+          "blockType": "definition"
+        },
+        {
+          "name": "Theorem 1",
+          "content": "A very important theorem",
+          "blockType": "theorem"
+        }
+      ]
+    }
+  ]
+}
+
