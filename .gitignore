@@ -3,8 +3,8 @@ node_modules/
 
 # Realm database files
 /db/*.realm*
-realm_db/
-/test/realm_db/
+realm_data/
+/test/realm_data/
 
 # IDE
 .idea/

@@ -1,6 +1,6 @@
 {
 	"nodes":[
-		{"id":"49f1d5b35a41b09c","x":-300,"y":-205,"width":250,"height":60,"type":"text","text":"#quest Quest Name 4"}
+		{"id":"49f1d5b35a41b09c","type":"text","text":"#quest Quest Name 4 ^085933de-dacc-41a0-a906-bcc648faa0f9","x":-300,"y":-205,"width":460,"height":65}
 	],
 	"edges":[]
 }

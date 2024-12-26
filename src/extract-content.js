@@ -1,12 +1,13 @@
 const { BlockType, FactType, QuestionType } = require('./models');
-const matter = require('gray-matter');
 const fs = require('fs');
 
 // Function to find the quest node
 const findQuestNode = (canvasData) => {
   return canvasData.nodes.find(node => {
-    const frontmatter = matter(node.text);
-    const content = frontmatter.content.trim();
+    if (node.type === 'file') {
+      return false;
+    }
+    const content = node.text.trim();
     return content.startsWith('#quest ');
   });
 };
@@ -17,50 +18,21 @@ const findNextSectionNode = (currentNode, canvasData) => {
   return edge ? canvasData.nodes.find(node => node.id === edge.toNode) : null;
 };
 
-// Function to find all section nodes
-const findAllSectionNodes = (canvasData) => {
-  const sectionNodes = [];
-  let currentNode = findQuestNode(canvasData);
-
-  while (currentNode) {
-    sectionNodes.push(currentNode);
-    currentNode = findNextSectionNode(currentNode, canvasData);
-  }
-
-  return sectionNodes;
-};
-
 // Function to find the next block node
 const findNextBlockNode = (currentNode, canvasData) => {
   const edge = canvasData.edges.find(edge => edge.fromNode === currentNode.id && edge.fromSide === 'bottom' && edge.toSide === 'top');
   return edge ? canvasData.nodes.find(node => node.id === edge.toNode) : null;
 };
 
-// Function to find all block nodes starting from a section node
-const findAllBlockNodesInSection = (sectionNode, canvasData) => {
-  const blockNodes = [];
-  let currentNode = findNextBlockNode(sectionNode, canvasData);
-
-  while (currentNode) {
-    blockNodes.push(currentNode);
-    currentNode = findNextBlockNode(currentNode, canvasData);
-  }
-
-  return blockNodes;
-};
-
-
 function convertBlockNode(blockNode) {
-  const frontmatter = matter(blockNode.text);
-  const text = frontmatter.content.trim();
-
+  const text = blockNode.text.trim();
   const firstLine = text.split('\n')[0];
   const {tag, name, id} = getMetadata(firstLine);
   if (!id) {
     throw new Error('Block id is required: ' + firstLine);
   }
 
-  const content = text.split('\n').slice(1).join('\n');
+  const content = text.split('\n').slice(1).join('\n').trim();
 
   let block = {
     name: name,
@@ -190,14 +162,6 @@ function isValidUUID(str) {
   return uuidRegex.test(str);
 }
 
-function findNextQuestFileNodes(currentNode, canvasData) {
-  const edges = canvasData.edges.filter(edge => edge.fromNode === currentNode.id && edge.fromSide === 'bottom' && edge.toSide === 'top');
-  const nextNodes = edges.map(edge => canvasData.nodes.find(node => node.id === edge.toNode)).filter(node => node && node.type === 'file');
-  return nextNodes;
-}
-
-
-
 function convertQuestFile(questFilePath) {
   const questCanvasData = JSON.parse(fs.readFileSync(questFilePath, 'utf8'));
   const questNode = findQuestNode(questCanvasData);
@@ -209,8 +173,10 @@ function convertQuestFile(questFilePath) {
 
 function findJourneyNode(canvasData) {
   return canvasData.nodes.find(node => {
-    const frontmatter = matter(node.text);
-    const content = frontmatter.content.trim();
+    if (node.type === 'file') {
+      return false;
+    }
+    const content = node.text.trim();
     return content.startsWith('#journey ');
   });
 }
@@ -283,32 +249,17 @@ function convertJourneyFile(journeyFile) {
     }
   });
 
-  return {
+  const journey = {
     id,
     name,
     desc,
     questSummaries: Object.values(questSummaryMap),
-    quests  // 添加完整的 quest 列表
   };
-}
 
-function saveJourneyToDatabase(journeyFile, realm) {
-  const journeyData = convertJourneyFile(journeyFile);
-  
-  realm.write(() => {
-    // 先保存所有的 quests
-    journeyData.quests.forEach(quest => {
-      realm.create('Quest', quest);
-    });
-
-    // 然后保存 journey
-    realm.create('Journey', {
-      id: journeyData.id,
-      name: journeyData.name,
-      desc: journeyData.desc,
-      questSummaries: journeyData.questSummaries
-    });
-  });
+  return {
+    journey,
+    quests
+  };
 }
 
 module.exports = {
@@ -317,8 +268,6 @@ module.exports = {
   getMetadata,
   convertSectionNode,
   convertQuestNode,
-  findNextQuestFileNodes,
   convertJourneyFile,
   convertQuestFile,
-  saveJourneyToDatabase,
 };

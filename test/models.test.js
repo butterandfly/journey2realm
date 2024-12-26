@@ -1,12 +1,21 @@
 const Realm = require('realm');
+const path = require('path');
+const fs = require('fs');
+const { TEST_CONFIG } = require('../src/config');
 const models = require('../src/models');
 
 let realm;
+const TEST_DB_DIR = path.dirname(TEST_CONFIG.path);
+
+beforeAll(() => {
+    if (!fs.existsSync(TEST_DB_DIR)) {
+        fs.mkdirSync(TEST_DB_DIR, { recursive: true });
+    }
+});
 
 beforeEach(async () => {
-    realm = await Realm.open({ 
-        schema: [models.Block, models.Section, models.Quest, models.Journey, models.QuestSummary], 
-        schemaVersion: 6,
+    realm = await Realm.open({
+        ...TEST_CONFIG,
         inMemory: true
     });
 });
@@ -147,6 +156,7 @@ describe('saveJourney', () => {
         const journeyData = {
             id: '00000000-0000-0000-0000-000000000010',
             desc: "Test Journey",
+            name: "Journey 1",
             questSummaries: [
                 {
                     questId: questData1.id,
@@ -176,5 +186,40 @@ describe('saveJourney', () => {
 
         const savedQuest2 = realm.objectForPrimaryKey('Quest', questData2.id);
         expect(savedQuest2.name).toBe(questData2.name);
+    });
+});
+
+describe('Journey Schema', () => {
+    it('should create Journey with all properties', () => {
+        const testJourney = {
+            id: '123',
+            name: 'Test Journey',
+            desc: 'Test Description',
+            questSummaries: []
+        };
+
+        let createdJourney;
+        realm.write(() => {
+            createdJourney = realm.create('Journey', testJourney);
+        });
+
+        expect(createdJourney.id).toBe('123');
+        expect(createdJourney.name).toBe('Test Journey');
+        expect(createdJourney.desc).toBe('Test Description');
+        expect(createdJourney.questSummaries.length).toBe(0);
+    });
+
+    it('should require name property', () => {
+        const testJourney = {
+            id: '123',
+            desc: 'Test Description',
+            questSummaries: []
+        };
+
+        expect(() => {
+            realm.write(() => {
+                realm.create('Journey', testJourney);
+            });
+        }).toThrow();
     });
 });

@@ -84,18 +84,20 @@ describe('convertJourneyFile', () => {
     const result = convertJourneyFile('test/Journey.canvas');
 
     expect(result).toEqual({
-      id: '00000000-0000-0000-0000-000000000001',
-      name: 'Simple Journey',
-      desc: 'A simple journey description.',
-      questSummaries: expect.arrayContaining([
-        expect.objectContaining({
-          questId: '00000000-0000-0000-0000-000000000002',
-          name: 'Simple Quest',
-          desc: 'A simple quest description',
-          dependencies: expect.any(Array),
-          children: expect.any(Array)
-        })
-      ]),
+      journey: {
+        id: '00000000-0000-0000-0000-000000000001',
+        name: 'Simple Journey',
+        desc: 'A simple journey description.',
+        questSummaries: expect.arrayContaining([
+          expect.objectContaining({
+            questId: '00000000-0000-0000-0000-000000000002',
+            name: 'Simple Quest',
+            desc: 'A simple quest description',
+            dependencies: expect.any(Array),
+            children: expect.any(Array)
+          })
+        ])
+      },
       quests: expect.arrayContaining([
         expect.objectContaining({
           id: '00000000-0000-0000-0000-000000000002',

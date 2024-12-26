@@ -1,6 +1,6 @@
 {
 	"nodes":[
-		{"id":"8b3e9ea815bc479a","x":-214,"y":-238,"width":250,"height":60,"type":"text","text":"#quest Quest Name 3"}
+		{"id":"8b3e9ea815bc479a","type":"text","text":"#quest Quest Name 3 ^f5471792-6df0-4662-8aa5-bfdc513f08d6","x":-214,"y":-238,"width":434,"height":78}
 	],
 	"edges":[]
 }

@@ -1,11 +1,13 @@
-const { findQuestNode } = require('../src/extract-content');
-const { convertBlockNode } = require('../src/extract-content');
+const {
+  findQuestNode,
+  convertBlockNode,
+  getMetadata,
+  convertSectionNode,
+  convertQuestNode,
+  convertQuestFile
+} = require('../src/extract-content');
+
 const { BlockType, FactType, QuestionType } = require('../src/models');
-const { getMetadata } = require('../src/extract-content');
-const { convertSectionNode } = require('../src/extract-content');
-const { convertQuestNode } = require('../src/extract-content');
-const { findNextQuestFileNodes } = require('../src/extract-content');
-const { convertQuestFile } = require('../src/extract-content');
 const fs = require('fs');
 jest.mock('fs');
 
@@ -51,19 +53,6 @@ describe('findQuestNode', () => {
         expect(questNode).toBeUndefined();
     });
 
-    it('should find the quest node even with frontmatter', () => {
-        const canvasData = {
-            nodes: [
-                { id: 1, text: 'Some text' },
-                { id: 2, text: '---\ntitle: Quest\n---\n#quest This is a quest' },
-                { id: 3, text: 'Another text' }
-            ],
-            edges: []
-        };
-
-        const questNode = findQuestNode(canvasData);
-        expect(questNode).toEqual({ id: 2, text: '---\ntitle: Quest\n---\n#quest This is a quest' });
-    });
 });
 
 describe('convertBlockNode', () => {
@@ -108,6 +97,37 @@ describe('convertBlockNode', () => {
     it('should throw an error if id is missing', () => {
         const blockNode = { text: '#definition Definition 1\nThis is a definition'};
         expect(() => convertBlockNode(blockNode)).toThrow('Block id is required: #definition Definition 1');
+    });
+
+    it('should convert a block node with #fact', () => {
+        const fakeUUID = '00000000-0000-0000-0000-000000000000';
+        const blockNode = { text: `#fact Important Fact ^${fakeUUID}\nThis is a fact` };
+        const block = convertBlockNode(blockNode);
+        expect(block).toEqual({
+            content: 'This is a fact',
+            blockType: BlockType.FACT,
+            factType: FactType.FACT,
+            name: 'Important Fact',
+            id: fakeUUID
+        });
+    });
+
+    it('should convert a block node with #single_choice', () => {
+        const fakeUUID = '00000000-0000-0000-0000-000000000000';
+        const blockNode = { text: `#single_choice Test Question ^${fakeUUID}\nWhat is 2+2?` };
+        const block = convertBlockNode(blockNode);
+        expect(block).toEqual({
+            content: 'What is 2+2?',
+            blockType: BlockType.QUESTION,
+            questionType: QuestionType.SINGLE_CHOICE,
+            questionData: {
+                choices: [],
+                answer: -1,
+                explanation: ''
+            },
+            name: 'Test Question',
+            id: fakeUUID
+        });
     });
 });
 
@@ -312,70 +332,6 @@ describe('convertQuestNode', () => {
                 }
             ]
         });
-    });
-});
-
-describe('findNextQuestFileNodes', () => {
-    it('should find the next quest file nodes connected to the current node', () => {
-        const canvasData = {
-            nodes: [
-                { id: 1, type: 'quest', text: 'Quest Node' },
-                { id: 2, type: 'file', text: 'File Node 1' },
-                { id: 3, type: 'file', text: 'File Node 2' },
-                { id: 4, type: 'text', text: 'Section Node' }
-            ],
-            edges: [
-                { fromNode: 1, fromSide: 'bottom', toNode: 2, toSide: 'top' },
-                { fromNode: 1, fromSide: 'bottom', toNode: 3, toSide: 'top' },
-                { fromNode: 1, fromSide: 'bottom', toNode: 4, toSide: 'top' }
-            ]
-        };
-
-        const nextNodes = findNextQuestFileNodes({ id: 1 }, canvasData);
-        expect(nextNodes).toEqual([
-            { id: 2, type: 'file', text: 'File Node 1' },
-            { id: 3, type: 'file', text: 'File Node 2' }
-        ]);
-    });
-
-    it('should return an empty array if no file nodes are connected', () => {
-        const canvasData = {
-            nodes: [
-                { id: 1, type: 'quest', text: 'Quest Node' },
-                { id: 2, type: 'section', text: 'Section Node' }
-            ],
-            edges: [
-                { fromNode: 1, fromSide: 'bottom', toNode: 2, toSide: 'top' }
-            ]
-        };
-
-        const nextNodes = findNextQuestFileNodes({ id: 1 }, canvasData);
-        expect(nextNodes).toEqual([]);
-    });
-
-    it('should return an empty array if no edges are connected', () => {
-        const canvasData = {
-            nodes: [
-                { id: 1, type: 'quest', text: 'Quest Node' },
-                { id: 2, type: 'file', text: 'File Node' }
-            ],
-            edges: []
-        };
-
-        const nextNodes = findNextQuestFileNodes({ id: 1 }, canvasData);
-        expect(nextNodes).toEqual([]);
-    });
-
-    it('should return an empty array if the current node is not found', () => {
-        const canvasData = {
-            nodes: [
-                { id: 2, type: 'file', text: 'File Node' }
-            ],
-            edges: []
-        };
-
-        const nextNodes = findNextQuestFileNodes({ id: 1 }, canvasData);
-        expect(nextNodes).toEqual([]);
     });
 });
 

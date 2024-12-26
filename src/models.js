@@ -97,6 +97,7 @@ class Journey extends Realm.Object {
         primaryKey: 'id',
         properties: {
             id: 'string',
+            name: 'string',
             desc: 'string',
             questSummaries: { type: 'list', objectType: 'QuestSummary' },
         }
