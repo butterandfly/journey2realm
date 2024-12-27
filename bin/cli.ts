@@ -1,15 +1,15 @@
 #!/usr/bin/env node
 
-const { convertJourneyFile } = require('../src/extract-content');
-const { saveJourney } = require('../src/models');
-const Realm = require('realm');
-const { PROD_CONFIG, TEST_CONFIG } = require('../src/config');
-const path = require('path');
-const fs = require('fs');
-const chalk = require('chalk');
-const ora = require('ora');
+import Realm from 'realm';
+import { convertJourneyFile } from '../src/extract-content';
+import { saveJourney } from '../src/db-models';
+import { PROD_CONFIG, TEST_CONFIG } from '../src/config';
+import * as path from 'path';
+import * as fs from 'fs';
+import chalk from 'chalk';
+import ora from 'ora';
 
-function deleteRealmFiles(realmPath) {
+export function deleteRealmFiles(realmPath: string): void {
   const basePath = realmPath.replace('.realm', '');
   const files = [
     `${basePath}.realm`,
@@ -33,8 +33,8 @@ function deleteRealmFiles(realmPath) {
   }
 }
 
-async function main(config) {
-  let realm;
+async function main(config: Realm.Configuration): Promise<boolean> {
+  let realm: Realm;
   try {
     const journeyFile = process.argv[2];
     if (!journeyFile) {
@@ -51,10 +51,10 @@ async function main(config) {
     console.log(chalk.blue(`\n📂 Processing: ${journeyFile}\n`));
 
     // 清理旧的数据库文件
-    deleteRealmFiles(config.path);
+    deleteRealmFiles(config.path!);
 
     // 确保数据库目录存在
-    const dbDir = path.dirname(config.path);
+    const dbDir = path.dirname(config.path!);
     if (!fs.existsSync(dbDir)){
       fs.mkdirSync(dbDir, { recursive: true });
     }
@@ -63,16 +63,14 @@ async function main(config) {
     
     realm = await Realm.open(config);
     const { journey, quests } = convertJourneyFile(journeyFile);
-    saveJourney(journey, quests, realm);
+    await saveJourney(journey, quests, realm);
     
     spinner.succeed(chalk.green('Journey converted and saved successfully! 🎉'));
-    // 成功完成时返回 true
     return true;
   } catch (error) {
-    // 发生错误时返回 false
     return false;
   } finally {
-    if (realm) {
+    if (realm!) {
       realm.close();
     }
   }
@@ -82,15 +80,9 @@ async function main(config) {
 if (require.main === module) {
   const config = process.env.NODE_ENV === 'test' ? TEST_CONFIG : PROD_CONFIG;
   main(config).then(success => {
-    // 根据执行结果决定退出码
     process.exit(success ? 0 : 1);
   }).catch(error => {
     console.error(chalk.red('\n❌ Error:'), error);
     process.exit(1);
   });
 }
-
-module.exports = {
-  deleteRealmFiles,
-  main
-}; 

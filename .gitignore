@@ -1,6 +1,10 @@
 # Dependencies
 node_modules/
 
+# TypeScript
+dist/
+*.tsbuildinfo
+
 # Realm database files
 /db/*.realm*
 realm_data/
