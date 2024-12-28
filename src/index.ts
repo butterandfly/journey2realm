@@ -3,7 +3,8 @@ export {
     convertQuestFile,
     convertQuestNode,
     convertSectionNode,
-    convertBlockNode
+    convertBlockNode,
+    convertQuestCanvas
 } from './extract-content';
 export { saveJourney } from './db-models';
 export { 
@@ -13,4 +14,24 @@ export {
 export type { 
     BlockSchema, SectionSchema, QuestSchema, 
     JourneySchema, QuestSummarySchema 
-} from './db-models'; 
+} from './db-models';
+
+// 从 node-validator 导出
+export {
+    isValidNode,
+    getMetadata,
+    isValidUUID
+} from './node-validator';
+
+export type {
+    CanvasNode,
+    CanvasEdge,
+    CanvasData,
+    Metadata,
+    NodeValidationResult,
+    MarkedNodeType,
+    NodeType,
+    StructuralNodeTag,
+    BlockNodeTag,
+    MarkedNodeTag
+} from './node-validator'; 

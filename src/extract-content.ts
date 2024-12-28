@@ -1,4 +1,12 @@
-import * as fs from 'fs';
+import {
+  CanvasNode,
+  CanvasEdge,
+  CanvasData,
+  Metadata,
+  getMetadata,
+  isValidUUID
+} from './node-validator';
+
 import {
   BlockType,
   FactType,
@@ -15,59 +23,11 @@ import {
   QuestSummarySchema
 } from './db-models';
 
-// Canvas 相关的接口定义（这些是特定于文件解析的，不是数据库模型）
-interface CanvasNode {
-  id: string;
-  type: string;
-  text?: string;
-  file?: string;
-}
-
-interface CanvasEdge {
-  fromNode: string;
-  toNode: string;
-  fromSide: string;
-  toSide: string;
-}
-
-interface CanvasData {
-  nodes: CanvasNode[];
-  edges: CanvasEdge[];
-}
-
-interface Metadata {
-  tag: string;
-  name: string;
-  id: string;
-}
+import fs from 'fs';
 
 interface JourneyResult {
   journey: JourneySchema;
   quests: QuestSchema[];
-}
-
-function isValidUUID(str: string): boolean {
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-  return uuidRegex.test(str);
-}
-
-export function getMetadata(line: string): Metadata {
-  const parts = line.trim().split(' ');
-  const tag = parts[0].replace('#', '');
-
-  // 判断最后一个string是否是`^`开始的uuid，是的话就设置为id
-  let id = '';
-  const lastPart = parts[parts.length - 1];
-  // 用正则判断是否为uuid v4
-  if (lastPart.startsWith('^') && isValidUUID(lastPart.replace('^', ''))) {
-    id = lastPart.replace('^', '');
-    parts.pop();
-  }
-
-  // 获取name
-  const name = parts.slice(1).join(' ');
-
-  return { tag, name, id };
 }
 
 export function convertBlockNode(blockNode: CanvasNode): BlockSchema {
@@ -112,6 +72,9 @@ export function convertBlockNode(blockNode: CanvasNode): BlockSchema {
         answer: -1,
         explanation: ''
       });
+      break;
+    case 'para':
+      block.blockType = BlockType.MD;
       break;
   }
 
@@ -319,5 +282,13 @@ export function findNextBlockNode(currentNode: CanvasNode, canvasData: CanvasDat
     edge.toSide === 'top'
   );
   return edge ? canvasData.nodes.find(node => node.id === edge.toNode) || null : null;
+}
+
+export function convertQuestCanvas(canvasData: CanvasData): QuestSchema {
+  const questNode = findQuestNode(canvasData);
+  if (!questNode) {
+    throw new Error('Quest node not found in canvas data');
+  }
+  return convertQuestNode(questNode, canvasData);
 }
 

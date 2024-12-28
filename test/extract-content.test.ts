@@ -1,7 +1,6 @@
 import { 
   findQuestNode, 
   convertBlockNode, 
-  getMetadata, 
   convertSectionNode, 
   convertQuestNode, 
   convertQuestFile 
@@ -50,58 +49,6 @@ describe('findQuestNode', () => {
 
     const questNode = findQuestNode(canvasData);
     expect(questNode).toBeUndefined();
-  });
-});
-
-describe('getMetadata', () => {
-  it('should extract metadata from a line with a tag and name', () => {
-    const line = '#definition Definition Name';
-    const metadata = getMetadata(line);
-    expect(metadata).toEqual({
-      tag: 'definition',
-      name: 'Definition Name',
-      id: ''
-    });
-  });
-
-  it('should extract metadata from a line with a tag, name, and id', () => {
-    const line = '#definition Definition Name ^123e4567-e89b-12d3-a456-426614174000';
-    const metadata = getMetadata(line);
-    expect(metadata).toEqual({
-      tag: 'definition',
-      name: 'Definition Name',
-      id: '123e4567-e89b-12d3-a456-426614174000'
-    });
-  });
-
-  it('should extract metadata from a line with a tag and id only', () => {
-    const line = '#para ^123e4567-e89b-12d3-a456-426614174000';
-    const metadata = getMetadata(line);
-    expect(metadata).toEqual({
-      tag: 'para',
-      name: '',
-      id: '123e4567-e89b-12d3-a456-426614174000'
-    });
-  });
-
-  it('should extract metadata from a line with a tag only', () => {
-    const line = '#para';
-    const metadata = getMetadata(line);
-    expect(metadata).toEqual({
-      tag: 'para',
-      name: '',
-      id: ''
-    });
-  });
-
-  it('should return empty string id for invalid uuid', () => {
-    const line = '#definition Definition Name ^something';
-    const metadata = getMetadata(line);
-    expect(metadata).toEqual({
-      tag: 'definition',
-      name: 'Definition Name ^something',
-      id: ''
-    });
   });
 });
 
