@@ -5,7 +5,7 @@ import {
   convertQuestNode, 
   convertQuestFile 
 } from '../src/extract-content';
-import { BlockType, FactType, QuestionType } from '../src/db-models';
+import { BlockType, FactType, QuestionType } from '../src/schemas';
 import * as fs from 'fs';
 jest.mock('fs');
 

@@ -11,17 +11,12 @@ import {
   BlockType,
   FactType,
   QuestionType,
-  Block,
-  Section,
-  Quest,
-  Journey,
-  QuestSummary,
   BlockSchema,
   SectionSchema,
   QuestSchema,
   JourneySchema,
   QuestSummarySchema
-} from './db-models';
+} from './schemas';
 
 import fs from 'fs';
 

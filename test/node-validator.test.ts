@@ -1,4 +1,8 @@
-import { getMetadata, isValidNode } from '../src/node-validator';
+import { 
+  getMetadata, 
+  isValidNode,
+  CanvasNode
+} from '../src/node-validator';
 
 describe('getMetadata', () => {
   it('should extract metadata from a line with a tag and name', () => {

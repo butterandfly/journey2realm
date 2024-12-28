@@ -6,15 +6,20 @@ export {
     convertBlockNode,
     convertQuestCanvas
 } from './extract-content';
+
 export { saveJourney } from './db-models';
 export { 
-    Block, Section, Quest, Journey, QuestSummary,
-    BlockType, FactType, QuestionType 
+    Block, Section, Quest, Journey, QuestSummary
 } from './db-models';
+
+export {
+    BlockType, FactType, QuestionType
+} from './schemas';
+
 export type { 
     BlockSchema, SectionSchema, QuestSchema, 
     JourneySchema, QuestSummarySchema 
-} from './db-models';
+} from './schemas';
 
 // 从 node-validator 导出
 export {

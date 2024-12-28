@@ -1,4 +1,18 @@
-// Canvas 相关接口
+export const MARKED_NODE_TAGS = {
+  structural: [
+    'journey',
+    'quest',
+    'section'
+  ],
+  block: [
+    'definition',
+    'theorem',
+    'fact',
+    'single_choice',
+    'para'
+  ]
+} as const;
+
 export interface CanvasNode {
   id: string;
   type: string;
@@ -18,14 +32,28 @@ export interface CanvasData {
   edges: CanvasEdge[];
 }
 
-// Metadata 相关
 export interface Metadata {
   tag: string;
   name: string;
   id: string;
 }
 
-// 工具函数
+export type MarkedNodeType = 'structural' | 'block';
+export type NodeType = MarkedNodeType | 'plain';
+
+export type StructuralNodeTag = typeof MARKED_NODE_TAGS.structural[number];
+export type BlockNodeTag = typeof MARKED_NODE_TAGS.block[number];
+export type MarkedNodeTag = StructuralNodeTag | BlockNodeTag;
+
+export interface NodeValidationResult {
+  isValid: boolean;
+  nodeType: NodeType;
+  error?: {
+    type: 'INVALID_TAG' | 'MISSING_UUID' | 'INVALID_UUID' | 'MISSING_NAME';
+    message: string;
+  };
+}
+
 export function isValidUUID(str: string): boolean {
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   return uuidRegex.test(str);
@@ -44,38 +72,6 @@ export function getMetadata(line: string): Metadata {
 
   const name = parts.slice(1).join(' ');
   return { tag, name, id };
-}
-
-// 节点类型定义
-export type MarkedNodeType = 'structural' | 'block';
-export type NodeType = MarkedNodeType | 'plain';
-
-export const MARKED_NODE_TAGS = {
-  structural: [
-    'journey',
-    'quest',
-    'section'
-  ],
-  block: [
-    'definition',
-    'theorem',
-    'fact',
-    'single_choice',
-    'para'
-  ]
-} as const;
-
-export type StructuralNodeTag = typeof MARKED_NODE_TAGS.structural[number];
-export type BlockNodeTag = typeof MARKED_NODE_TAGS.block[number];
-export type MarkedNodeTag = StructuralNodeTag | BlockNodeTag;
-
-export interface NodeValidationResult {
-  isValid: boolean;
-  nodeType: NodeType;
-  error?: {
-    type: 'INVALID_TAG' | 'MISSING_UUID' | 'INVALID_UUID' | 'MISSING_NAME';
-    message: string;
-  };
 }
 
 export function isValidNode(node: CanvasNode): NodeValidationResult {

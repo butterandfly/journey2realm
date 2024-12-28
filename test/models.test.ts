@@ -2,8 +2,21 @@ import * as Realm from 'realm';
 import * as path from 'path';
 import * as fs from 'fs';
 import { TEST_CONFIG } from '../src/config';
-import { BlockSchema, BlockType, FactType, QuestionType, QuestSchema, SectionSchema, JourneySchema, saveJourney } from '../src/db-models';
-import { Block, Section, Quest } from '../src/db-models';
+import { 
+    Block, 
+    Section, 
+    Quest,
+    saveJourney 
+} from '../src/db-models';
+import { 
+    BlockType, 
+    FactType, 
+    QuestionType,
+    BlockSchema,
+    SectionSchema,
+    QuestSchema,
+    JourneySchema 
+} from '../src/schemas';
 
 let realm: Realm;
 // @ts-ignore
@@ -64,7 +77,6 @@ describe('Block', () => {
             expect(block.blockType).toBe(BlockType.FACT);
             expect(block.factType).toBe(FactType.FACT);
         });
-
     });
 });
 

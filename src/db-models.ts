@@ -1,45 +1,11 @@
 import { Realm } from 'realm';
-
-export enum BlockType {
-    MD = 'md',
-    DEFINITION = 'definition',
-    FACT = 'fact',
-    QUESTION = 'question',
-}
-
-export enum FactType {
-    FACT = 'fact',
-    AXIOM = 'axiom',
-    THEOREM = 'theorem',
-    COROLLARY = 'corollary',
-    LEMMA = 'lemma',
-    PROPOSITION = 'proposition',
-    CONJECTURE = 'conjecture',
-}
-
-export enum QuestionType {
-    SINGLE_CHOICE = 'single_choice',
-    MULTIPLE_CHOICE = 'multiple_choice',
-    TRUE_FALSE = 'true_false',
-}
-
-// Structure for SINGLE_CHOICE questionData:
-// {
-//     "choices": string[],  // Array of choice strings
-//     "answer": int,        // Index of the correct answer in the choices array
-//     "explanation": string // Explanation for the correct answer
-// }
-
-export interface BlockSchema {
-    id: string;
-    content: string;
-    blockType: string;
-    modifiedAt: Date;
-    name?: string;
-    factType?: string;
-    questionType?: string;
-    questionData?: string;
-}
+import {
+    BlockSchema,
+    SectionSchema,
+    QuestSchema,
+    QuestSummarySchema,
+    JourneySchema
+} from './schemas';
 
 export class Block extends Realm.Object<BlockSchema> {
     static schema = {
@@ -58,14 +24,6 @@ export class Block extends Realm.Object<BlockSchema> {
     };
 }
 
-export interface SectionSchema {
-    id: string;
-    blocks: BlockSchema[];
-    name: string;
-    desc: string;
-    modifiedAt: Date;
-}
-
 export class Section extends Realm.Object<SectionSchema> {
     static schema = {
         name: 'Section',
@@ -78,14 +36,6 @@ export class Section extends Realm.Object<SectionSchema> {
             modifiedAt: { type: 'date', default: new Date() },
         }
     };
-}
-
-export interface QuestSchema {
-    id: string;
-    name: string;
-    sections: SectionSchema[];
-    modifiedAt: Date;
-    desc: string;
 }
 
 export class Quest extends Realm.Object<QuestSchema> {
@@ -102,14 +52,6 @@ export class Quest extends Realm.Object<QuestSchema> {
     };
 }
 
-export interface QuestSummarySchema {
-    questId: string;
-    name: string;
-    desc: string;
-    dependencies: string[];
-    children: string[];
-}
-
 export class QuestSummary extends Realm.Object<QuestSummarySchema> {
     static schema = {
         name: 'QuestSummary',
@@ -122,13 +64,6 @@ export class QuestSummary extends Realm.Object<QuestSummarySchema> {
             children: { type: 'list', objectType: 'string' },
         },
     };
-}
-
-export interface JourneySchema {
-    id: string;
-    name: string;
-    desc: string;
-    questSummaries: QuestSummarySchema[];
 }
 
 export class Journey extends Realm.Object<JourneySchema> {
