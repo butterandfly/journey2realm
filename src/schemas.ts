@@ -61,4 +61,11 @@ export interface JourneySchema {
     name: string;
     desc: string;
     questSummaries: QuestSummarySchema[];
+}
+
+export interface SingleChoiceQuestionDataSchema {
+    questionContent: string;
+    choices: { [key: string]: string };
+    answer: string;
+    explanation: string;
 } 

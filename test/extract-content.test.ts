@@ -3,7 +3,8 @@ import {
   convertBlockNode, 
   convertSectionNode, 
   convertQuestNode, 
-  convertQuestFile 
+  convertQuestFile,
+  convertSingleChoice
 } from '../src/extract-content';
 import { BlockType, FactType, QuestionType } from '../src/schemas';
 import * as fs from 'fs';
@@ -114,16 +115,46 @@ describe('convertBlockNode', () => {
 
   it('should convert a block node with #single_choice', () => {
     const fakeUUID = '00000000-0000-0000-0000-000000000000';
-    const blockNode = { id: '1', type: 'text', text: `#single_choice Test Question ^${fakeUUID}\nWhat is 2+2?` };
+    const blockNode = { 
+      id: '1', 
+      type: 'text', 
+      text: `#single_choice Test Question ^${fakeUUID}
+What is 2+2?
+
+choice:
+a: 3
+b: 4
+c: 5
+
+answer:
+b
+
+explanation:
+Because 2+2=4`
+    };
+    
     const block = convertBlockNode(blockNode);
     expect(block).toEqual({
-      content: 'What is 2+2?',
+      content: expect.any(String),
       blockType: BlockType.QUESTION,
       questionType: QuestionType.SINGLE_CHOICE,
       questionData: expect.any(String),
       name: 'Test Question',
       id: fakeUUID,
       modifiedAt: expect.any(Date)
+    });
+
+    // 验证 questionData 是否正确解析
+    const questionData = JSON.parse(block.questionData!);
+    expect(questionData).toEqual({
+      questionContent: 'What is 2+2?',
+      choices: {
+        'a': '3',
+        'b': '4',
+        'c': '5'
+      },
+      answer: 'b',
+      explanation: 'Because 2+2=4'
     });
   });
 });
@@ -248,4 +279,68 @@ describe('convertQuestNode', () => {
             modifiedAt: expect.any(Date)
         });
     });
+});
+
+describe('convertSingleChoice', () => {
+  it('should parse a well-formatted single choice question', () => {
+    const input = `This is a question.
+It supports multiple lines and $\\LaTeX$.
+
+choice:
+a: First choice with $\\alpha$
+b: Second choice with $\\beta$
+c: Third choice with $\\gamma$
+
+answer:
+b
+
+explanation:
+This is the explanation.
+It can have multiple lines too.`;
+
+    const result = convertSingleChoice(input);
+
+    expect(result.questionContent).toBe('This is a question.\nIt supports multiple lines and $\\LaTeX$.');
+    expect(result.choices).toEqual({
+      'a': 'First choice with $\\alpha$',
+      'b': 'Second choice with $\\beta$',
+      'c': 'Third choice with $\\gamma$'
+    });
+    expect(result.answer).toBe('b');
+    expect(result.explanation).toBe('This is the explanation.\nIt can have multiple lines too.');
+  });
+
+  it('should handle different order of sections', () => {
+    const input = `Question text.
+
+explanation:
+The explanation.
+
+answer:
+a
+
+choice:
+a: Choice A
+b: Choice B`;
+
+    const result = convertSingleChoice(input);
+
+    expect(result.questionContent).toBe('Question text.');
+    expect(result.choices).toEqual({
+      'a': 'Choice A',
+      'b': 'Choice B'
+    });
+    expect(result.answer).toBe('a');
+    expect(result.explanation).toBe('The explanation.');
+  });
+
+  it('should handle empty content gracefully', () => {
+    const input = '';
+    const result = convertSingleChoice(input);
+
+    expect(result.questionContent).toBe('');
+    expect(result.choices).toEqual({});
+    expect(result.answer).toBe('');
+    expect(result.explanation).toBe('');
+  });
 });
