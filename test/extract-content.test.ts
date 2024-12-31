@@ -157,6 +157,24 @@ Because 2+2=4`
       explanation: 'Because 2+2=4'
     });
   });
+
+  it('should convert a block node with #remark', () => {
+    const fakeUUID = '00000000-0000-0000-0000-000000000000';
+    const blockNode = { 
+      id: '1', 
+      type: 'text', 
+      text: `#remark Important Note ^${fakeUUID}\nThis is a key point to remember.`
+    };
+    
+    const block = convertBlockNode(blockNode);
+    expect(block).toEqual({
+      content: 'This is a key point to remember.',
+      blockType: BlockType.REMARK,
+      name: 'Important Note',
+      id: fakeUUID,
+      modifiedAt: expect.any(Date)
+    });
+  });
 });
 
 describe('convertSectionNode', () => {

@@ -69,6 +69,9 @@ export function convertBlockNode(blockNode: CanvasNode): BlockSchema {
     case 'para':
       block.blockType = BlockType.MD;
       break;
+    case 'remark':
+      block.blockType = BlockType.REMARK;
+      break;
   }
 
   return block;

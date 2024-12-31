@@ -3,6 +3,7 @@ export enum BlockType {
     DEFINITION = 'definition',
     FACT = 'fact',
     QUESTION = 'question',
+    REMARK = 'remark',
 }
 
 export enum FactType {
